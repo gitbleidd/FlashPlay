@@ -4,9 +4,8 @@ import RPi.GPIO as GPIO
 import pygame
 import os, glob, time
 
-a=[]
-
 def find_sound():
+    a=[]
     tree = os.walk('/media/pi')
     for t in tree:
         a.append(t)
