@@ -3,36 +3,37 @@
 import RPi.GPIO as GPIO
 import pygame
 import os, glob, time
+import eyed3
 
-def find_sound():
+def find_sound(): #Song search function
     a=[]
     tree = os.walk('/media/pi')
     for t in tree:
         a.append(t)
         break
+        
+    for fl_num in range(0, len(a[0][1])):
+        if len(a[0][1]) > 0:
+            flash_name = a[0][1][fl_num]
+            print("flash drive found: " + flash_name)
+            for file in os.listdir("/media/pi/" + flash_name):
+                if file.endswith(".mp3") or file.endswith(".wav"):
+                    sound_path = os.path.join("/media/pi/" + flash_name, file)
+                    print("sound found at: " + sound_path)
+                    print(sound_path)
+                    return sound_path
 
-    if len(a[0][1]) > 0:
-        flash_name = a[0][1][0]
-        print("flash drive found: " + flash_name)
-        for file in os.listdir("/media/pi/" + flash_name):
-            if file.endswith(".mp3") or file.endswith(".wav"):
-                sound_path = os.path.join("/media/pi/" + flash_name, file)
-                print("sound found at: " + sound_path)
-                return sound_path
-    else:
-        print('Error, no usb folder')
-        a.clear()
-        tree = os.walk('/media/pi')
-        for t in tree:
-            a.append(t)
-            break
+    print('Error, no usb with mp3')
     return None
 
-def button_callback(channel):
+def button_callback(channel): #Check button status function
     print('button pushed')
     sound_path = find_sound()
     if sound_path is not None:
-        pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
+        pygame.mixer.quit()
+        song = eyed3.load(sound_path)
+        frq = song.info.sample_freq
+        pygame.mixer.init(frequency=frq, size=-16, channels=2, buffer=4096)
         pygame.mixer.music.load(sound_path)
         pygame.mixer.music.set_volume(2)
         pygame.mixer.music.play(0)
