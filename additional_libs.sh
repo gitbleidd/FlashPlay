@@ -1,4 +1,6 @@
 #!/bin/sh
 
-#Installing additional library for fplay script
-pip3 install eyeD3
+#Установка дополнительных библиотек для работы скрипта fplay
+#Обязательно sudo, чтобы библиотека установилась для всех пользователей
+#eyeD3 версии 0.8 для корректной работы скрипта
+sudo pip3 install eyeD3==0.8
